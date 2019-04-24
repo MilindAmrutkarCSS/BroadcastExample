@@ -3,43 +3,30 @@ package com.example.broadcastexample;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.widget.Toast;
 
 public class ExampleBroadcast extends BroadcastReceiver {
 
     /**
+     *  Instead of listening for System broadcasts we can
+     *  send and receive our own broadcasts.
+     *  These broadcasts can be explicit broadcasts(which
+     *  means that we specify the component that we want to
+     *  trigger directly for eg. We want to send the broadcast
+     *  that only triggers our ExampleBroadcast receiver and no
+     *  other broadcast receiver
      *
-     * Implicit Broadcasts means that whatever component sends
-     * this broadcast, doesn't specify our broadcast receiver
-     * directly by it's classname instead it just specifies an
-     * action and we can decide to listen to this action
-     * and react to it. Static means we register our broadcast
-     * in the manifest file, and we can receive our broadcast
-     * even if our app is not running.
-     * There are lot of restrictions put by Android in static
-     * implementation of Broadcast receiver.
-     * In versions greater than Naugat and Oreo we cannot use
-     * static registration of broadcasts like for eg.
-     * android.net.conn.CONNECTIVITY_CHANGE doesn't work any more
-     * in Oreo and all.
+     *  Or we can send an implicit broadcast which is
+     *  basically the same as the System broadcast
      *
-     * The solution is to use the Dynamic implementation of
-     * receivers.
      */
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
-           boolean noConnectivity = intent.getBooleanExtra(
-                   ConnectivityManager.EXTRA_NO_CONNECTIVITY,
-                   false
-           );
-           if(noConnectivity) {
-               Toast.makeText(context, "Disconnected", Toast.LENGTH_SHORT).show();
-           } else {
-               Toast.makeText(context, "Connected", Toast.LENGTH_SHORT).show();
-           }
+        if ("com.example.EXAMPLE_ACTION".equals(intent.getAction())) {
+            String receivedText = intent.getStringExtra("com.example.EXTRA_TEXT");
+            Toast.makeText(context, receivedText, Toast.LENGTH_SHORT).show();
         }
     }
 }
